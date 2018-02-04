@@ -24,4 +24,10 @@ get_data()
 def index():
     return dict(get_data())
 
+# For prometheus
+@app.get('/metrics')
+def metrics():
+  data = get_data()
+  return "# TYPE temperature gauge\ntemperature %s\n# TYPE humidity gauge\nhumidity %s\n" % (data['temperature'], data['humidity'])
+
 app.run(host='0.0.0.0', port=8081)
