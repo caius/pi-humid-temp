@@ -1,0 +1,17 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+"RPi.GPIO" = "*"
+"bottle" = "*"
+
+[packages.MyPyDHT]
+git = "https://github.com/freedom27/MyPyDHT"
+editable = true
+
+[dev-packages]
+
