@@ -1,24 +1,18 @@
 #!/usr/bin/env python
 
 from bottle import Bottle
-import MyPyDHT
+import json
 
 app = Bottle()
 
-last_data = {}
-
 def get_data():
-  try:
-    humidity, temperature = MyPyDHT.sensor_read(MyPyDHT.Sensor.DHT11, 25)
-    global last_data
-    last_data = {'humidity': humidity, 'temperature': temperature}
-    return last_data
-  except:
-    print("Got error grabbing sensor data")
-  finally:
-    return last_data 
+  with open("temp.txt", "r") as f:
+    try:
+      return json.load(f)
+    except:
+      return {"humidity": None, "temperature": None}
 
-get_data()
+print(get_data())
 
 @app.get('/')
 def index():
@@ -28,6 +22,7 @@ def index():
 @app.get('/metrics')
 def metrics():
   data = get_data()
-  return "# TYPE temperature gauge\ntemperature %s\n# TYPE humidity gauge\nhumidity %s\n" % (data['temperature'], data['humidity'])
+  if data['temperature'] != None:
+    return "# TYPE temperature gauge\ntemperature %f\n# TYPE humidity gauge\nhumidity %f\n" % (data['temperature'], data['humidity'])
 
 app.run(host='0.0.0.0', port=8081)
